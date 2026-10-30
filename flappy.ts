@@ -1,164 +1,151 @@
-// Background scrolling speed
-let move_speed = 3;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flappy Bird in JavaScript</title>
+<style>
+body {
+    margin: 0;
+    background: #70c5ce;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+canvas {
+    border: 2px solid #000;
+    background: #70c5ce;
+}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
 
-// Gravity constant value
-let gravity = 0.5;
+    <script>
+// ===== Game Setup =====
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-// Getting reference to the bird element
-let bird = document.querySelector('.bird');
+// Bird properties
+let bird = {
+    x: 50,
+    y: 150,
+    width: 30,
+    height: 30,
+    gravity: 0.4,
+    lift: -8,
+    velocity: 0
+};
 
-// Getting bird element properties
-let bird_props = bird.getBoundingClientRect();
-let background =
-    document.querySelector('.background')
-        .getBoundingClientRect();
+// Pipes array
+let pipes = [];
+let frameCount = 0;
+let score = 0;
+let gameOver = false;
 
-// Getting reference to the score element
-let score_val =
-    document.querySelector('.score_val');
-let message =
-    document.querySelector('.message');
-let score_title =
-    document.querySelector('.score_title');
-
-// Setting initial game state to start
-let game_state = 'Start';
-
-// Add an eventlistener for key presses
-document.addEventListener('keydown', (e) => {
-
-    // Start the game if enter key is pressed
-    if (e.key == 'Enter' &&
-        game_state != 'Play') {
-        document.querySelectorAll('.pipe_sprite')
-            .forEach((e) => {
-                e.remove();
-            });
-        bird.style.top = '40vh';
-        game_state = 'Play';
-        message.innerHTML = '';
-        score_title.innerHTML = 'Score : ';
-        score_val.innerHTML = '0';
-        play();
+// ===== Event Listener =====
+document.addEventListener("keydown", () => {
+    if (!gameOver) {
+        bird.velocity = bird.lift;
+    } else {
+        resetGame();
     }
 });
-function play() {
-    function move() {
 
-        // Detect if game has ended
-        if (game_state != 'Play') return;
-
-        // Getting reference to all the pipe elements
-        let pipe_sprite = document.querySelectorAll('.pipe_sprite');
-        pipe_sprite.forEach((element) => {
-
-            let pipe_sprite_props = element.getBoundingClientRect();
-            bird_props = bird.getBoundingClientRect();
-
-            // Delete the pipes if they have moved out
-            // of the screen hence saving memory
-            if (pipe_sprite_props.right <= 0) {
-                element.remove();
-            } else {
-                // Collision detection with bird and pipes
-                if (
-                    bird_props.left < pipe_sprite_props.left +
-                    pipe_sprite_props.width &&
-                    bird_props.left +
-                    bird_props.width > pipe_sprite_props.left &&
-                    bird_props.top < pipe_sprite_props.top +
-                    pipe_sprite_props.height &&
-                    bird_props.top +
-                    bird_props.height > pipe_sprite_props.top
-                ) {
-
-                    // Change game state and end the game
-                    // if collision occurs
-                    game_state = 'End';
-                    message.innerHTML = 'Press Enter To Restart';
-                    message.style.left = '28vw';
-                    return;
-                } else {
-                    // Increase the score if player
-                    // has the successfully dodged the
-                    if (
-                        pipe_sprite_props.right < bird_props.left &&
-                        pipe_sprite_props.right +
-                        move_speed >= bird_props.left &&
-                        element.increase_score == '1'
-                    ) {
-                        score_val.innerHTML = +score_val.innerHTML + 1;
-                    }
-                    element.style.left =
-                        pipe_sprite_props.left - move_speed + 'px';
-                }
-            }
-        });
-
-        requestAnimationFrame(move);
-    }
-    requestAnimationFrame(move);
-
-    let bird_dy = 0;
-    function apply_gravity() {
-        if (game_state != 'Play') return;
-        bird_dy = bird_dy + gravity;
-        document.addEventListener('keydown', (e) => {
-            if (e.key == 'ArrowUp' || e.key == ' ') {
-                bird_dy = -7.6;
-            }
-        });
-
-        // Collision detection with bird and
-        // window top and bottom
-
-        if (bird_props.top <= 0 ||
-            bird_props.bottom >= background.bottom) {
-            game_state = 'End';
-            message.innerHTML = 'Press Enter To Restart';
-            message.style.left = '28vw';
-            return;
-        }
-        bird.style.top = bird_props.top + bird_dy + 'px';
-        bird_props = bird.getBoundingClientRect();
-        requestAnimationFrame(apply_gravity);
-    }
-    requestAnimationFrame(apply_gravity);
-
-    let pipe_seperation = 0;
-
-    // Constant value for the gap between two pipes
-    let pipe_gap = 35;
-    function create_pipe() {
-        if (game_state != 'Play') return;
-
-        // Create another set of pipes
-        // if distance between two pipe has exceeded
-        // a predefined value
-        if (pipe_seperation > 115) {
-            pipe_seperation = 0
-
-            // Calculate random position of pipes on y axis
-            let pipe_posi = Math.floor(Math.random() * 43) + 8;
-            let pipe_sprite_inv = document.createElement('div');
-            pipe_sprite_inv.className = 'pipe_sprite';
-            pipe_sprite_inv.style.top = pipe_posi - 70 + 'vh';
-            pipe_sprite_inv.style.left = '100vw';
-
-            // Append the created pipe element in DOM
-            document.body.appendChild(pipe_sprite_inv);
-            let pipe_sprite = document.createElement('div');
-            pipe_sprite.className = 'pipe_sprite';
-            pipe_sprite.style.top = pipe_posi + pipe_gap + 'vh';
-            pipe_sprite.style.left = '100vw';
-            pipe_sprite.increase_score = '1';
-
-            // Append the created pipe element in DOM
-            document.body.appendChild(pipe_sprite);
-        }
-        pipe_seperation++;
-        requestAnimationFrame(create_pipe);
-    }
-    requestAnimationFrame(create_pipe);
+// ===== Game Functions =====
+function drawBird() {
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 }
 
+function drawPipes() {
+    ctx.fillStyle = "green";
+    pipes.forEach(pipe => {
+        ctx.fillRect(pipe.x, 0, pipe.width, pipe.top);
+        ctx.fillRect(pipe.x, canvas.height - pipe.bottom, pipe.width, pipe.bottom);
+    });
+}
+
+function updateBird() {
+    bird.velocity += bird.gravity;
+    bird.y += bird.velocity;
+
+    // Collision with ground or ceiling
+    if (bird.y + bird.height > canvas.height || bird.y < 0) {
+        gameOver = true;
+    }
+}
+
+function updatePipes() {
+    pipes.forEach(pipe => {
+        pipe.x -= 2;
+
+        // Collision detection
+        if (
+            bird.x < pipe.x + pipe.width &&
+            bird.x + bird.width > pipe.x &&
+            (bird.y < pipe.top || bird.y + bird.height > canvas.height - pipe.bottom)
+        ) {
+            gameOver = true;
+        }
+
+        // Score update
+        if (pipe.x + pipe.width === bird.x) {
+            score++;
+        }
+    });
+
+    // Remove off-screen pipes
+    pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
+
+    // Add new pipes every 100 frames
+    if (frameCount % 100 === 0) {
+        let gap = 150;
+        let top = Math.random() * (canvas.height - gap - 100) + 50;
+        let bottom = canvas.height - top - gap;
+        pipes.push({ x: canvas.width, width: 40, top: top, bottom: bottom });
+    }
+}
+
+function drawScore() {
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.fillText("Score: " + score, 10, 25);
+}
+
+function resetGame() {
+    bird.y = 150;
+    bird.velocity = 0;
+    pipes = [];
+    frameCount = 0;
+    score = 0;
+    gameOver = false;
+}
+
+// ===== Main Game Loop =====
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!gameOver) {
+        updateBird();
+        updatePipes();
+        drawBird();
+        drawPipes();
+        drawScore();
+        frameCount++;
+    } else {
+        ctx.fillStyle = "black";
+        ctx.font = "30px Arial";
+        ctx.fillText("Game Over", canvas.width / 2 - 80, canvas.height / 2);
+        ctx.font = "20px Arial";
+        ctx.fillText("Press any key to restart", canvas.width / 2 - 110, canvas.height / 2 + 40);
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+// Start game
+gameLoop();
+</script>
+</body>
+</html>
