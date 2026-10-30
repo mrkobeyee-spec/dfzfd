@@ -1,27 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Flappy Bird in JavaScript</title>
-<style>
-body {
-    margin: 0;
-    background: #70c5ce;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-canvas {
-    border: 2px solid #000;
-    background: #70c5ce;
-}
-</style>
-</head>
-<body>
-<canvas id="gameCanvas" width="400" height="600"></canvas>
-
-    <script>
 // ===== Game Setup =====
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
