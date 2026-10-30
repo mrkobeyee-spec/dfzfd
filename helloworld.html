@@ -2,10 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Flappy Bird JS</title>
-    <link rel="stylesheet" href ="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanilla JS Flappy Bird</title>
+    <style>
+        body {
+            margin: 0;
+            background: #202124;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: 2px solid #fff;
+            background: #70c5ce; /* Flappy Bird Sky Blue */
+        }
+    </style>
 </head>
 <body>
-<canvas id="gameCanvas" width="400" height="600"></canvas>
+<canvas id="gameCanvas" width="320" height="480"></canvas>
+<script src="game.js"></script>
 </body>
 </html>
+
