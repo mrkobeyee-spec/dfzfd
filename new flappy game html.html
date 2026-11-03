@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF -8">
+    <title>Flappy Bird</title>
+    </style>
+</head>
+</html>
+<canvas id="gameCanvas" width="320" height="480"></canvas>
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let bird = { x:50, y:200, velocity:0, gravity:0.025, lift:-2.1, radius:20 };
+let pipes = [];
+let pipeGap = 150;
+let pipeWidth = 50;
+let pipeSpeed = 2;
+let score = 0;
+let gameOver = false;
+
+function drawBird() {
+    ctx.beginPath();
+    ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2)
+    ctx.fillStyle = "yellow";
+    ctx.fill()
+}
+
+function drawPipes() {
+    ctx.fillStyle = "green"
+    pipes.forEach(p => {
+        ctx.fillRect(p.x, 0, pipeWidth, p.top);
+        ctx.fillRect(p.x, p.bottom, pipeWidth, canvas.height - p.bottom);
+    });
+}
+
+function update() {
+    if (gameOver) return;
+    bird.velocity += bird.gravity;
+    bird.y += bird.velocity;
+
+    pipes.forEach(p => {
+        p.x -= pipeSpeed;
+        if (bird.x + bird.radius > p.x && bird.x - bird.radius < p.x + pipeWidth) {
+            if (bird.y - birdRadius < p.top || bird.y + bird.radius > p.bottom) gameOver = true;
+        }
+        if (p.x + pipeWidth < bird.x && !p.passed) {
+            score++;
+            p.passed = true;
+        }
+    })
+}
+
+pipes = pipes.filter(p => p.x > -pipeWidth);
+if (pipes.length === 0 || pipes[pipes.length - 1].x < cnavas.width - 250) {
+    let top = Math.random() * (canvas.height - pipeGap - 100) + 50;
+    pipes.push({x: canvas.width, top: top, bottom: top + pipeGap, passed: false});
+}
+
+function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    drawBird();
+    drawPipes();
+    ctx.fillStyle = "black"}
+    ctx.fillText("Score: " + score, 10, 20);
+    if (gameOver) ctx.fillText("Game Over", 120, 240);{
+    }
+
+function loop() {update(); draw(); requestAnimationFrame(loop); }
+loop();
+
+canvas.addEventListener("click", () => {
+    if (gameOver) location.reload();
+    else bird.velocity = bird.lift;
+})

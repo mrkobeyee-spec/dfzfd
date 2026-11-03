@@ -1,27 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vanilla JS Flappy Bird</title>
-    <style>
-        body {
-            margin: 0;
-            background: #202124;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        canvas {
-            border: 2px solid #fff;
-            background: #75c5ce; /* Flappy Bird Sky Blue */
-        }
-    </style>
-</head>
-<body>
-<canvas id="gameCanvas" width="320" height="480"></canvas>
-<script> src="game.js"</script>
+<!-- Game Canvas -->
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<!-- Restart Button -->
+<button id="restartBtn" onclick="restartGame()">Restart</button>
+<button id="restartBtn">Restart</button>
+<canvas id="game"></canvas>
+
+<script>
+    let gameRunning = false;
+
+    function startGame() {
+        gameRunning = true;
+        // reset variables
+        player = { x: 50, y: 50 };
+        score = 0;
+        loop();
+    }
+
+    function loop() {
+        if (!gameRunning) return;
+        // game logic + drawing
+        requestAnimationFrame(loop);
+    }
+
+    document.getElementById("restartBtn").onclick()instanceof lick = () => {
+        gameRunning = false;
+        startGame();
+    };
+
+    startGame();
+</script>
+
+<script>
+    // Example game state variables
+    let gameRunning = true;
+    let score = 0;
+    let bird = { x: 50, y: 200, velocity: 0 };
+    let pipes = [];
+
+    function startGame() {
+        // Your game loop logic goes here
+        // Example:
+        // requestAnimationFrame(gameLoop);
+    }
+
+    function gameOver() {
+        gameRunning = false;
+        document.getElementById("restartBtn").style.display = "block";
+    }
+
+    function restartGame() {
+        // Reset game variables
+        gameRunning = true;
+        score = 0;
+        bird = { x: 50, y: 200, velocity: 0 };
+        pipes = [];
+
+        // Hide restart button
+        document.getElementById("restartBtn").style.display = "none";
+
+        // Restart game loop
+        startGame();
+    }
+</script>
+
 </body>
 </html>
 
@@ -31,8 +73,8 @@
     <meta charset="UTF-8">
     <title>Flappy Bird - Fixed Pipes</title>
     <style>
-        body { margin:0; background:#70c5ce; }
-        canvas { display:block; margin:0 auto; background:#70c5ce; }
+        body { margin:0; background: #6875aa; }
+        canvas { display:block; margin:0 auto; background: #1dacd8; }
     </style>
 </head>
 <body>
@@ -42,7 +84,7 @@
     const canvas = document.getElementById("game");
     const ctx = canvas.getContext("2d");
 
-    let bird = { x: 80, y: 250, radius: 15, velocity: 0 };
+    let bird = { x: 80, y: 250, radius: 20, velocity: 5 };
     let gravity = 0.4;
     let jumpStrength = -7;
 
@@ -64,7 +106,7 @@
         });
     }
 
-    // Add pipes every 2 seconds
+    // Add pipes every 5 seconds
     setInterval(() => {
         if (!gameOver) createPipe();
     }, 2000);
@@ -110,8 +152,8 @@
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw bird (replace with image if desired)
-        ctx.fillStyle = "yellow";
+        // Draw bird ()
+        ctx.fillStyle = "yellow-green";
         ctx.beginPath();
         ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
         ctx.fill();
@@ -123,6 +165,10 @@
             ctx.fillRect(pipe.x, pipe.bottom, pipeWidth, canvas.height - pipe.bottom);
         });
 
+        // Ground
+        ctx.fillStyle = "orange";
+        ctx.fillRect(0, 600, 500, 100);
+
         // Draw score
         ctx.fillStyle = "white";
         ctx.font = "30px Arial";
@@ -132,6 +178,7 @@
             ctx.fillStyle = "red";
             ctx.font = "40px Arial";
             ctx.fillText("Game Over", 100, 300);
+            ctx.fillText("Click to Restart", 100, 150)
         }
     }
 
@@ -146,3 +193,55 @@
 </script>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #restartBtn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none; /* show only on game over */
+        }
+    </style>
+</head>
+
+<body>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<!-- Restart Button -->
+<button id="restartBtn" onclick="restartGame()">Restart</button>
+
+<script>
+    // Example game state
+    let gameRunning = true;
+
+    function gameOver() {
+        gameRunning = false;
+        document.getElementById("restartBtn").style.display = "block";
+    }
+
+    function restartGame() {
+        // Reset your game variables here
+        gameRunning = true;
+
+        // Hide the button again
+        document.getElementById("restartBtn").style.display = "none";
+
+        // Reinitialize your game loop, bird position, pipes, score, etc.
+        startGame();
+    }
+
+    function startGame() {
+        requestAnimationFrame(gameLoop);
+    }
+</script>
+</body>
+</html>
+
+

@@ -30,7 +30,7 @@
 <html lang="">
 <head>
     <meta charset="UTF-8">
-    <title>Flappy Bird (HTML Version)</title>
+    <title>Flappy Bird Simple (HTML Version)</title>
     <style>
         body { margin: 0; background: #87CEEB; }
         canvas { display: block; margin: auto; background: #87CEEB; }
@@ -88,7 +88,7 @@
             pipes = pipes.filter(p => p.x + p.width > 0);
 
             // Add new pipes
-            if (pipes.length < 4) addPipe();
+            if (pipes.length < 5) addPipe();
 
             // Collision detection
             pipes.forEach(p => {
@@ -156,7 +156,7 @@
         if (e.code === "Space") {
             if (gameOver) {
                 // Reset
-                birdY = 250;
+                birdY = 250;dd
                 birdVelocity = 0;
                 pipes = [];
                 addPipe();
