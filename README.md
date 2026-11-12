@@ -7,3 +7,8 @@ Tips for a High Score
 • Avoid rapid tapping: Tapping too fast causes the bird to fly too high and spin out of control.
 • Find a rhythm: Tap just as the bird reaches the bottom part of its falling arc to maintain a steady, manageable flight path.
 • Look ahead: Focus your eyes on the upcoming pipes rather than staring directly at the bird so you can react earlier.
+
+
+Why I created this:
+I created this project so I could practice my coding skills after not having coded for the past 2 years. I worked on adding a simpler touch to the game Flappy Bird. 
+
